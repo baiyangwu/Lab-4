@@ -1,6 +1,10 @@
 package pkgGame;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.Random;
 
 import pkgHelper.LatinSquare;
@@ -48,6 +52,12 @@ public class Sudoku extends LatinSquare {
 	 * @throws Exception
 	 *             if the iSize given doesn't have a whole number square root
 	 */
+	
+	
+	private HashMap<Integer, Cell> cells = new HashMap<Integer, Cell>();
+	
+	
+	
 	public Sudoku(int iSize) throws Exception {
 
 		this.iSize = iSize;
@@ -410,4 +420,69 @@ public class Sudoku extends LatinSquare {
 			ar[i] = a;
 		}
 	}
+	
+	
+//------------------------------------------------------------Lab 4-----------------------------------------------------
+	private void SetCells() {
+		
+	}
+	
+	private java.util.HashSet<java.lang.Integer> getAllValidCellValues(int iCol, int iRow){
+		
+	}
+	
+	public boolean isValidValue(Sudoku.Cell c, int iValue) {
+		return isValidValue(c.getiRow(), c.getiCol(), iValue);
+	}
+	
+	private boolean fillRemaining(Sudoku.Cell c) {
+		
+	}
+	
+	private class Cell{
+		private int iRow;
+		private int iCol;
+		private ArrayList<Integer> lstValidValues = new ArrayList<Integer>();
+		
+		public Cell(int iRow, int iCol) {
+			super();
+			this.iRow = iRow;
+			this.iCol = iCol;
+		}
+		
+		public int getiRow() {
+			return iRow;
+		}
+		
+		public int getiCol() {
+			return iCol;
+		}
+		
+		public int hashCode() {
+			return Objects.hash(iRow, iCol);
+		}
+		
+		public boolean equals(Object o) {
+		
+		}
+		
+		public ArrayList<Integer> getLstValidValues() {
+			return lstValidValues;
+		}
+		
+		public void setlstValidValues(HashSet<Integer> hsValidValues) {
+			
+		}
+		
+		public void ShuffleValidValues() {
+			Collections.shuffle(lstValidValues);
+		}
+		
+		public Cell GetNextCell(Cell c) {
+			
+		}
+		
+		
+	}
+	
 }

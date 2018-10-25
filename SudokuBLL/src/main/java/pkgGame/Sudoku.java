@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
 
@@ -424,18 +425,46 @@ public class Sudoku extends LatinSquare {
 	
 //------------------------------------------------------------Lab 4-----------------------------------------------------
 	private void SetCells() {
+		for (int i = 0 ; i < iSize; i++) {
+			for (int j = 0; j < iSize; j++) {
+				Cell c = new Cell(i, j);
+				c.setlstValidValues(getAllValidCellValues(j,i));
+				c.ShuffleValidValues();
+				cells.put(c.hashCode(),c);
+			}
+		}
+	}
+	
+	private HashSet<Integer> getAllValidCellValues(int iCol, int iRow){
+		HashSet<Integer> hsCellRange = new HashSet<Integer>();
+		for (int i = 0; i< iSize ; i++){
+			if (isValidValue(iRow, iCol, i)) {
+				hsCellRange.add(i);
+			}
+		}
+		return hsCellRange;
 		
 	}
 	
-	private java.util.HashSet<java.lang.Integer> getAllValidCellValues(int iCol, int iRow){
-		
-	}
-	
-	public boolean isValidValue(Sudoku.Cell c, int iValue) {
+	public boolean isValidValue(Cell c, int iValue) {
 		return isValidValue(c.getiRow(), c.getiCol(), iValue);
 	}
 	
-	private boolean fillRemaining(Sudoku.Cell c) {
+	private boolean fillRemaining(Cell c) {
+		if (c == null)
+			return true;
+		
+		for (int num: c.getLstValidValues()) {
+			if (isValidValue(c,num)) {
+				this.getPuzzle()[c.getiRow()][c.getiCol()] = num;
+				
+				if (fillRemaining(c.GetNextCell(c))) {
+					return true;
+				}
+				this.getPuzzle()[c.getiRow()][c.getiCol()] = 0;
+			}
+		}
+		return false;
 		
 	}
 	
@@ -458,20 +487,30 @@ public class Sudoku extends LatinSquare {
 			return iCol;
 		}
 		
+		@Override
 		public int hashCode() {
 			return Objects.hash(iRow, iCol);
 		}
 		
-		public boolean equals(Object o) {
-		
+		@Override
+		public boolean equals(Object a) {
+			if (a == this) {
+				return true;
+			}
+			if (!(a instanceof Cell)) {
+				return false;
+			}
+			Cell c = (Cell) a;
+			return (iRow == c.iRow) && (iCol == c.iCol);
 		}
+		
 		
 		public ArrayList<Integer> getLstValidValues() {
 			return lstValidValues;
 		}
 		
 		public void setlstValidValues(HashSet<Integer> hsValidValues) {
-			
+			lstValidValues = new ArrayList<Integer>(hsValidValues);
 		}
 		
 		public void ShuffleValidValues() {
@@ -479,10 +518,38 @@ public class Sudoku extends LatinSquare {
 		}
 		
 		public Cell GetNextCell(Cell c) {
+			int i = c.getiCol()+1;
+			int j = c.getiRow();
+			int iSqrtSzie = (int) Math.sqrt(iSize);
 			
+			if ((i >= iSize) && (j < iSize -1)) {
+				j = j + 1;
+				i = 0;
+			}
+			if ((j >= iSize) && (i >= iSize)) {
+				return null;
+			}
+			if (j< iSqrtSize) {
+				if (i < iSqrtSize) {
+					i = iSqrtSize;
+				}
+			}
+			if (j < iSize - iSqrtSzie) {
+				if (i == (int) (j / iSqrtSize)*iSqrtSize) {
+					i = i + iSqrtSize;
+				}
+			}
+			else {
+				if (i == iSize - iSqrtSize) {
+					j = j + 1;
+					i = 0;
+					if (j >= iSize) {
+						return null;
+					}
+				}
+			}
+			return (Cell)cells.get(Objects.hash(j,i));
 		}
-		
-		
 	}
 	
 }
